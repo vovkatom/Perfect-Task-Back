@@ -4,7 +4,7 @@
 
 "-@^0.0.1":
   version "0.0.1"
-  resolved "https://registry.npmjs.org/-/-/--0.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/-/-/--0.0.1.tgz#db6db7cd866142880dd03e5b8781d1b4fac0e5bd"
   integrity sha512-3HfneK3DGAm05fpyj20sT3apkNcvPpCuccOThOPdzz8sY7GgQGe0l93XH9bt+YzibcTIgUAIMoyVJI740RtgyQ==
 
 "@aws-crypto/ie11-detection@^3.0.0":
@@ -1872,7 +1872,7 @@ node-fetch@^2.6.7:
 
 nodemon@^3.1.0:
   version "3.1.0"
-  resolved "https://registry.npmjs.org/nodemon/-/nodemon-3.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-3.1.0.tgz#ff7394f2450eb6a5e96fe4180acd5176b29799c9"
   integrity sha512-xqlktYlDMCepBJd43ZQhjWwMw2obW/JRvkrLxq5RCNcuDDX1DbcPT+qT1IlIIdf+DhnWs90JpTMe+Y5KxOchvA==
   dependencies:
     chokidar "^3.5.2"
@@ -2127,7 +2127,7 @@ saslprep@^1.0.3:
 
 save@^2.9.0:
   version "2.9.0"
-  resolved "https://registry.npmjs.org/save/-/save-2.9.0.tgz"
+  resolved "https://registry.yarnpkg.com/save/-/save-2.9.0.tgz#6659375fadeaf58e4abc6a90ec6b0fb2e2232e0f"
   integrity sha512-eg8+g8CjvehE/2C6EbLdtK1pINVD27pcJLj4M9PjWWhoeha/y5bWf4dp/0RF+OzbKTcG1bae9qi3PAqiR8CJTg==
   dependencies:
     async "^3.2.2"
