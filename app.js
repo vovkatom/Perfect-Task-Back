@@ -3,6 +3,9 @@ import morgan from "morgan";
 import cors from "cors";
 
 import authRouter from "./routes/authRouter.js";
+import boardsRouter from "./routes/boardsRouter.js";
+import columnsRouter from "./routes/columnsRouter.js";
+import cardsRouter from "./routes/cardsRouter.js";
 import mongoose from "mongoose";
 import "dotenv/config";
 
@@ -16,6 +19,9 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.use("/api/users", authRouter);
+app.use("/api/boards", boardsRouter);
+app.use("/api/columns", columnsRouter);
+app.use("/api/cards", cardsRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
