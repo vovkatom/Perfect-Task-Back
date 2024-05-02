@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 
-// import authRouter from "./routes/authRouter.js";
+import authRouter from "./routes/authRouter.js";
 import mongoose from "mongoose";
 import "dotenv/config";
 
@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-// app.use("/api/users", authRouter);
+app.use("/api/users", authRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
