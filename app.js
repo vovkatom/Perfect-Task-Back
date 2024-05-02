@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 
-// import authRouter from "./routes/authRouter.js";
+import authRouter from "./routes/authRouter.js";
 import boardsRouter from "./routes/boardsRouter.js";
 import columnsRouter from "./routes/columnsRouter.js";
 import cardsRouter from "./routes/cardsRouter.js";
@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-// app.use("/api/users", authRouter);
+app.use("/api/users", authRouter);
 app.use("/api/boards", boardsRouter);
 app.use("/api/columns", columnsRouter);
 app.use("/api/cards", cardsRouter);
