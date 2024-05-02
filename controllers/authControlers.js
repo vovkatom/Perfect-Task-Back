@@ -3,6 +3,8 @@ import * as authServices from "../services/authServices.js";
 import jwt from "jsonwebtoken";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
+import uploadToCloudinary from "../helpers/uploadToCloudinary.js";
+import gravatar from "gravatar";
 
 const signup = async (req, res) => {
   const { password, email } = req.body;
@@ -17,6 +19,26 @@ const signup = async (req, res) => {
     ...req.body,
     password: hashPassword,
   });
+  const { _id: id } = newUser;
+  const gravatar_url = gravatar.url(email, { s: "250", r: "g" }, true);
+
+  req.file.path = gravatar_url;
+  const secure_url = await uploadToCloudinary(req, id);
+
+  const payload = {
+    id,
+  };
+
+  const { JWT_SECRET } = process.env;
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+
+  await authServices.updateUser(
+    { _id: id },
+    {
+      avatarURL: secure_url,
+      token,
+    }
+  );
 
   res.status(201).json({
     user: {

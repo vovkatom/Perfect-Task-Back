@@ -8,12 +8,14 @@ import {
 import authControllers from "../controllers/authControlers.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 
 const authRouter = express.Router();
 
 authRouter.post(
   "/register",
-  validateBody(userSignupSchema),
+  // validateBody(userSignupSchema),
+  upload.single("avatarURL"),
   authControllers.signup
 );
 
