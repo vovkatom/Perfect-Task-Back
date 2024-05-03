@@ -11,8 +11,8 @@ export const icons = [
   "icon-hexagon-01",
 ];
 export const backgrounds = [
-  "1",
-  "2",
+  "01",
+  "02",
   "3",
   "4",
   "5",
