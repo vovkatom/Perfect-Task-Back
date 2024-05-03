@@ -1,17 +1,21 @@
 import { Schema, model } from "mongoose";
+import { handleSaveError, setUpdateSetting } from "./hooks.js";
 
-const columnsSchema = new Schema(
-  {
+const columnSchema = new Schema({
     title: {
-      type: String,
-      required: [true, "Title for the column is required"],
+        type: String,
+        required: [true, 'Set title for column'],
     },
-    columnOwner: {
-      type: Schema.Types.ObjectId,
-      ref: "board",
+    board: {
+        type: Schema.Types.ObjectId,
+        ref: 'board',
     },
-  },
-  { versionKey: false }
-);
+}, { versionKey: false, timestamps: true });
 
-export const Columns = model("columns", columnsSchema);
+columnSchema.pre("findOneAndUpdate", setUpdateSetting);
+columnSchema.post("save", handleSaveError);
+columnSchema.post("findOneAndUpdate", handleSaveError);
+
+const Column = model("column", columnSchema);
+
+export default Column;
