@@ -25,4 +25,4 @@ export default {
   addColumn: ctrlWrapper(addColumn),
 //     getAllBoards: ctrlWrapper(getAllBoards),
 //   getBoardById: ctrlWrapper(getBoardById),
-};;
+};

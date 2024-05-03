@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { handleSaveError, setUpdateSetting } from "./hooks.js";
-import { priority, deadlineRegex } from "../constants/borderArray.js";
+import { priorities, deadlineRegex } from "../constants/boardsArray.js";
 
 const cardSchema = new Schema({
     title: {
@@ -12,7 +12,7 @@ const cardSchema = new Schema({
     },
     priority: {
         type: String,
-        enum: priority,
+        enum: priorities,
         default: "without priority",
     },
     deadline: {

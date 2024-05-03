@@ -1,5 +1,5 @@
 import Joi from "joi";
-import {priority, deadlineRegex} from "../constants/borderArray.js"
+import {priorities, deadlineRegex} from "../constants/boardsArray.js"
 
 const cardAddSchema = Joi.object({
     title: Joi.string().required()
@@ -7,7 +7,7 @@ const cardAddSchema = Joi.object({
             "any.required": `missing required "title" field`,
         }),
     description: Joi.string(),
-    priority: Joi.string().valid(...priority),
+    priority: Joi.string().valid(...priorities),
     deadline: Joi.string().pattern(deadlineRegex),
     column: Joi.string().required()
         .messages({
@@ -18,7 +18,7 @@ const cardAddSchema = Joi.object({
 const cardUpdateSchema = Joi.object({
     title: Joi.string(),
     description: Joi.string(),
-    priority: Joi.string().valid(...priority),
+    priority: Joi.string().valid(...priorities),
     deadline: Joi.string().pattern(deadlineRegex),
 });
 
