@@ -1,28 +1,38 @@
 import { Schema, model } from "mongoose";
-import { backgrounds, icons } from "../constants/borderArray";
+import { handleSaveError, setUpdateSetting } from "./hooks.js";
+import { icons, backgrounds } from "../constants/boardsArray.js";
 
-const boardSchema = new Schema(
-  {
+
+const boardSchema = new Schema({
     title: {
-      type: String,
-      required: [true, "Title for the board is required"],
+        type: String,
+        required: [true, 'Set title for board'],
     },
     icon: {
-      type: String,
-      enum: icons,
-      default: "icon-colors",
+        type: String,
+        enum: icons,
+        default: "icon-Project",
     },
     background: {
-      type: String,
-      enum: backgrounds,
-      default: "",
+        type: String,
+        default: "no-background",
+        enum: backgrounds,
+    },
+    backgroundURL: {
+        type: Object,
+        default: {},
     },
     owner: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+        required: [true, 'Set owner for board'],
     },
-  },
-  { versionKey: false }
-);
+}, { versionKey: false, timestamps: true, minimize: false });
 
-export const Board = model("board", boardSchema);
+boardSchema.pre("findOneAndUpdate", setUpdateSetting);
+boardSchema.post("save", handleSaveError);
+boardSchema.post("findOneAndUpdate", handleSaveError);
+
+const Board = model("board", boardSchema);
+
+export default Board; 

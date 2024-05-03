@@ -1,33 +1,36 @@
 import { Schema, model } from "mongoose";
+import { handleSaveError, setUpdateSetting } from "./hooks.js";
+import { priority, deadlineRegex } from "../constants/borderArray.js";
 
-import { priorities } from "../constants/borderArray";
-
-const cardSchema = new Schema(
-  {
+const cardSchema = new Schema({
     title: {
-      type: String,
-      required: [true, "Set name for card title"],
+        type: String,
+        required: [true, 'Set title for card'],
     },
     description: {
-      type: String,
-      default: null,
+        type: String,
     },
-    priorities: {
-      type: String,
-      enum: priorities,
-      default: "without",
+    priority: {
+        type: String,
+        enum: priority,
+        default: "without priority",
     },
     deadline: {
-      type: Date,
-      required: [true, "Deadline is required"],
-      default: () => new Date().setDate(new Date().getDate() + 1),
+        type: String,
+        match: deadlineRegex,
     },
-    cardOwner: {
-      type: Schema.Types.ObjectId,
-      ref: "column",
+    column: {
+        type: Schema.Types.ObjectId,
+        ref: 'column',
+        required: [true, 'Set column for card'],
     },
-  },
-  { versionKey: false }
-);
 
-export const Card = model("card", cardSchema);
+}, { versionKey: false, timestamps: true });
+
+cardSchema.pre("findOneAndUpdate", setUpdateSetting);
+cardSchema.post("save", handleSaveError);
+cardSchema.post("findOneAndUpdate", handleSaveError);
+
+const Card = model("card", cardSchema);
+
+export default Card;
