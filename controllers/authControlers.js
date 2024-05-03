@@ -5,90 +5,133 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import uploadToCloudinary from "../helpers/uploadToCloudinary.js";
 import gravatar from "gravatar";
+import "dotenv/config";
+
+const { JWT_SECRET } = process.env;
 
 const signup = async (req, res) => {
-    const { password, email } = req.body;
-    const user = await authServices.findUser({ email });
-    if (user) {
-        throw HttpError(409, "Email in use");
+  const { password, email } = req.body;
+  console.log(req.user);
+  const user = await authServices.findUser({ email });
+  if (user) {
+    throw HttpError(409, "Email in use");
+  }
+
+  const hashPassword = await bcrypt.hash(password, 10);
+
+  const gravatar_url = gravatar.url(
+    email,
+    { s: "250", r: "x", d: "identicon" },
+    true
+  );
+
+  const newUser = await authServices.signup({
+    ...req.body,
+    password: hashPassword,
+    avatarURL: gravatar_url,
+  });
+  const { _id: id } = newUser;
+
+  const payload = {
+    id,
+  };
+
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+
+  await authServices.updateUser(
+    { _id: id },
+    {
+      token,
     }
+  );
 
-    const hashPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await authServices.signup({
-        ...req.body,
-        password: hashPassword,
-    });
-    const { _id: id } = newUser;
-    // const gravatar_url = gravatar.url(email, { s: "250", r: "g" }, true);
-
-    const gravatar_url = await gravatar.url(
-        email,
-        { s: "250", r: "x", d: "robohash" },
-        true
-    );
-
-    // req.file.path = gravatar_url;
-    // const secure_url = await uploadToCloudinary(req, id);
-    //const secure_url = gravatar_url;
-
-    const payload = {
-        id,
-    };
-
-    const { JWT_SECRET } = process.env;
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-
-    await authServices.updateUser(
-        { _id: id },
-        {
-            // avatarURL: secure_url,
-            avatarURL: gravatar_url,
-            token,
-        }
-    );
-
-    res.status(201).json({
-        user: {
-            email: newUser.email,
-            name: newUser.name,
-        },
-    });
+  res.status(201).json({
+    user: {
+      email: newUser.email,
+      name: newUser.name,
+    },
+  });
 };
 
 const signin = async (req, res) => {
-    const { email, password } = req.body;
-    const user = await authServices.findUser({ email });
-    if (!user) {
-        throw HttpError(401, "Email or password is wrong");
+  const { email, password } = req.body;
+  const user = await authServices.findUser({ email });
+  if (!user) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+
+  const passwordCompare = await bcrypt.compare(password, user.password);
+
+  if (!passwordCompare) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+
+  const { _id: id } = user;
+
+  const payload = {
+    id,
+  };
+
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  await authServices.updateUser({ _id: id }, { token });
+
+  res.json({
+    token,
+    user: {
+      email: user.email,
+      name: user.name,
+    },
+  });
+};
+
+export const updateAuth = async (req, res) => {
+  const { _id: id } = req.user;
+  const { email } = req.body;
+  const user = await authServices.findUser({ _id: id });
+
+  let gravatar_url = "";
+
+  if (req.file) {
+    gravatar_url = await uploadToCloudinary(req);
+  } else if (!user.avatarURL.includes("cloudinary.com")) {
+    gravatar_url = gravatar.url(
+      email,
+      { s: "250", r: "x", d: "identicon" },
+      true
+    );
+  } else {
+    gravatar_url = user.avatarURL;
+  }
+
+  const newUser = await authServices.updateUser(
+    { _id: id },
+    {
+      ...req.body,
+      avatarURL: gravatar_url,
     }
+  );
+  console.log("TWO", newUser);
+  res.status(200).json({
+    user: {
+      email: newUser.email,
+      name: newUser.name,
+    },
+  });
+};
 
-    const passwordCompare = await bcrypt.compare(password, user.password);
+const signout = async (req, res) => {
+  const { _id } = req.user;
+  console.log("first", req);
+  await authServices.updateUser({ _id }, { token: "" });
 
-    if (!passwordCompare) {
-        throw HttpError(401, "Email or password is wrong");
-    }
-
-    const { _id: id } = user;
-
-    const payload = {
-        id,
-    };
-
-    const { JWT_SECRET } = process.env;
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await authServices.updateUser({ _id: id }, { token });
-
-    res.json({
-        token,
-        user: {
-            email: user.email,
-            name: user.name,
-        },
-    });
+  res.status(204).json({
+    message: "Signout success",
+  });
 };
 
 export default {
-    signup: ctrlWrapper(signup),
-    signin: ctrlWrapper(signin),
+  signup: ctrlWrapper(signup),
+  signin: ctrlWrapper(signin),
+  updateAuth: ctrlWrapper(updateAuth),
+  signout: ctrlWrapper(signout),
 };

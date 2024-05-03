@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 import HttpError from "../helpers/HttpError.js";
 
-// import { findUser } from "../services/authServices.js";
+import { findUser } from "../services/authServices.js";
 
 const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;
@@ -18,7 +18,7 @@ const authenticate = async (req, res, next) => {
   try {
     const { JWT_SECRET } = process.env;
     const { id } = jwt.verify(token, JWT_SECRET);
-    // const user = await findUser({ _id: id });
+    const user = await findUser({ _id: id });
     if (!user) {
       return next(HttpError(401, "User not found"));
     }

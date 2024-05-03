@@ -13,20 +13,29 @@ import upload from "../middlewares/upload.js";
 const authRouter = express.Router();
 
 authRouter.post(
-  "/register",
-  // validateBody(userSignupSchema),
-  upload.single("avatarURL"),
+  "/signup",
+  validateBody(userSignupSchema),
+  // upload.single("avatarURL"),
   authControllers.signup
 );
 
 authRouter.post(
-  "/login",
+  "/signin",
   validateBody(userSigninSchema),
   authControllers.signin
 );
 
+authRouter.post("/signout", authenticate, authControllers.signout);
+
+authRouter.patch(
+  "/update",
+  authenticate,
+  upload.single("avatarURL"),
+  authControllers.updateAuth
+);
+
 // authRouter.get("/current", authenticate, authControllers.getCurrent);
 
-// authRouter.post("/logout", authenticate, authControllers.signout);
+authRouter.post("/logout", authenticate, authControllers.signout);
 
 export default authRouter;
