@@ -1,8 +1,8 @@
 import { v2 as cloudinary } from "cloudinary";
 
-const uploadToCloudinary = async (req, _id) => {
+const uploadToCloudinary = async (req) => {
   const avatarURL = req.file.path;
-  // const { _id } = req.user;
+  const { _id } = req.user;
   const public_id = `user_avatar-${_id}`;
 
   const options = {

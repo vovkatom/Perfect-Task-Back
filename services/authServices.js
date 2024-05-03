@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/UserModel.js";
 
 export const signup = (data) => User.create(data);
 export const findUser = (filter) => User.findOne(filter);
