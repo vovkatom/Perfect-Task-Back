@@ -2,21 +2,20 @@ import mongoose from "mongoose";
 import Board from "../models/boardModel.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import  HttpError  from "../helpers/HttpError.js"
-// import fetchFromCloudinary from "../../helpers/fetchFromCloudinary.js";
+import fetchFromCloudinary from "../helpers/fetchFromCloudinary.js";
 
 const addBoard = async (req, res) => {
   const { _id: owner } = req.user;
-  console.log("req.user:", req.user);
-  // const { background } = req.body;
+  const { background } = req.body;
 
   const boardData = { ...req.body };
 
-  // if (background) {
-  //     boardData.backgroundURL = await fetchFromCloudinary(background);
-  // }
+  if (background) {
+      boardData.backgroundURL = await fetchFromCloudinary(background);
+  }
 
   const result = await Board.create({ ...boardData, owner });
-  // const result = await Board.create({ ...boardData});
+//   const result = await Board.create({ ...boardData});
 
   res.status(201).json(result);
 };
