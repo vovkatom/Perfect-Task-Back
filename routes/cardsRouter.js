@@ -11,10 +11,9 @@ const cardsRouter = express.Router();
 cardsRouter.use(authenticate);
 
 cardsRouter.post("/", validateBody(cardSchema.cardAddSchema), cardsController.addCard);
-
-// cardsRouter.delete("/:id", isValidId, cardsController.deleteCard);
-
-// cardsRouter.put("/:id", isValidId,  validateBody(cardSchema.cardUpdateSchema), cardsController.updateCard);
+cardsRouter.put("/:id", isValidId,  validateBody(cardSchema.cardUpdateSchema), cardsController.updateCard);
+cardsRouter.delete("/:id", isValidId, cardsController.deleteCard);
+cardsRouter.patch("/:id/transfer", isValidId, validateBody(cardSchema.cardTransferSchema), cardsController.transferCard);
 
 
 
