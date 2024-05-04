@@ -13,7 +13,9 @@ boardsRouter.get("/", boardsController.getAllBoards);
 
 boardsRouter.get("/:id", isValidId, boardsController.getBoardById);
 
-boardsRouter.post("/", isValidId,  validateBody(boardsShemas.boardAddSchema), boardsController.addBoard)
+
+boardsRouter.post("/", validateBody(boardsShemas.boardAddSchema), boardsController.addBoard)
+
 
 // boardsRouter.delete("/:id", isValidId, boardsController.deleteBoard);
 
