@@ -126,36 +126,29 @@ const updateBoard = async (req, res) => {
   res.json(result);
 };
 
-
-
-
 const deleteBoard = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const result = await Board.findByIdAndDelete(id);
-    if (!result) {
-        throw HttpError(404, `Board with id=${id} not found`);
-    }
+  const result = await Board.findByIdAndDelete(id);
+  if (!result) {
+    throw HttpError(404, `Board with id=${id} not found`);
+  }
 
-    const deletedColumn = await Column.find({ board: id });
-    if (deletedColumn) {
-            deletedColumn.forEach(async (_id) => {
-                await Card.deleteMany({ column: _id });
-            });
-        await Column.deleteMany({ board: id });
-    }
+  const deletedColumn = await Column.find({ board: id });
+  if (deletedColumn) {
+    deletedColumn.forEach(async (_id) => {
+      await Card.deleteMany({ column: _id });
+    });
+    await Column.deleteMany({ board: id });
+  }
 
-    res.status(200).json({message: "Board deleted", deletedId: result._id });
+  res.status(200).json({ message: "Board deleted", deletedId: result._id });
 };
-
-
-
-
 
 export default {
   addBoard: ctrlWrapper(addBoard),
   getAllBoards: ctrlWrapper(getAllBoards),
   getBoardById: ctrlWrapper(getBoardById),
-    updateBoard: ctrlWrapper(updateBoard),
+  updateBoard: ctrlWrapper(updateBoard),
   deleteBoard: ctrlWrapper(deleteBoard),
 };

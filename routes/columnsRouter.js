@@ -11,10 +11,8 @@ const columnsRouter = express.Router();
 columnsRouter.use(authenticate);
 
 columnsRouter.post("/", validateBody(columnsSchema.columnsAddSchema), columnsController.addColumn);
-// columnsRouter.get("/:id", isValidId, columnsController.getColumnById);
-
-// columnsRouter.put("/:id", isValidId, validateBody(columnsSchema.columnsUpdateSchema), columnsController.updateColumn);
-
-// columnsRouter.delete("/:id", isValidId, columnsController.deleteColumn);
+columnsRouter.get("/:id", isValidId, columnsController.getColumnById);
+columnsRouter.put("/:id", isValidId, validateBody(columnsSchema.columnsUpdateSchema), columnsController.updateColumn);
+columnsRouter.delete("/:id", isValidId, columnsController.deleteColumn);
 
 export default columnsRouter;
