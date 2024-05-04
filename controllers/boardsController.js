@@ -11,11 +11,12 @@ const addBoard = async (req, res) => {
   const boardData = { ...req.body };
 
   if (background) {
-      boardData.backgroundURL = await fetchFromCloudinary(background);
+   
+      boardData.backgroundURL= await fetchFromCloudinary(background);
   }
 
   const result = await Board.create({ ...boardData, owner });
-//   const result = await Board.create({ ...boardData});
+
 
   res.status(201).json(result);
 };
