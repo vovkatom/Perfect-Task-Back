@@ -7,13 +7,21 @@ const fetchFromCloudinary = async (tag) => {
 
   if (tag !== "no-background") {
     try {
-      const folderName = `${tag}`;
+      const folderName = `backgrounds/${tag}`;
+      // const folderName = `backgrounds/b01`
+      
       console.log("folderName:", folderName);
+
       const result = await cloudinary.api.resources({
         type: "upload",
         prefix: folderName,
+        min_bytes: 1,
       });
+
+      const nonZeroByteFiles = result.resources.filter(file => file.bytes > 0);
+
       const sortedImg = result.resources.sort((a, b) => a.width - b.width);
+      // const sortedImg = nonZeroByteFiles.sort((a, b) => a.width - b.width);
       const setOfImages = {
         min_1x: sortedImg[0].secure_url,
         min_2x: sortedImg[1].secure_url,
@@ -25,7 +33,7 @@ const fetchFromCloudinary = async (tag) => {
         desktop_2x: sortedImg[7].secure_url,
       };
       console.log(sortedImg.length);
-
+        // console.log(result);
 
       return setOfImages;
     } catch (error) {
