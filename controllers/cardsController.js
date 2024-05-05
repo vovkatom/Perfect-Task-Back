@@ -52,7 +52,6 @@ const transferCard = async (req, res) => {
   const result = await Card.findByIdAndUpdate(
     id,
     { column: destination_id },
-    { new: true }
   );
   if (!result) {
     throw HttpError(404, `Card with id=${id} not found`);
