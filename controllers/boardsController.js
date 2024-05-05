@@ -8,9 +8,18 @@ import fetchFromCloudinary from "../helpers/fetchFromCloudinary.js";
 
 const addBoard = async (req, res) => {
   const { _id: owner } = req.user;
-  const { background } = req.body;
+  const { background, title } = req.body;
 
   const boardData = { ...req.body };
+
+  const existingBoard = await Board.findOne({ title, owner });
+
+  if (existingBoard) {
+    throw HttpError(
+      409,
+      `This user already has a board with the same  ${title} `
+    );
+  }
 
   if (background) {
     boardData.backgroundURL = await fetchFromCloudinary(background);
@@ -110,7 +119,7 @@ const getBoardById = async (req, res) => {
 
 const updateBoard = async (req, res) => {
   const { id } = req.params;
-  const { background } = req.body;
+  const { background, title } = req.body;
 
   const updateBoardData = { ...req.body };
 
