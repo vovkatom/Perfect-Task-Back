@@ -119,7 +119,7 @@ const getBoardById = async (req, res) => {
 
 const updateBoard = async (req, res) => {
   const { id } = req.params;
-  const { background, title } = req.body;
+  const { background } = req.body;
 
   const updateBoardData = { ...req.body };
 
