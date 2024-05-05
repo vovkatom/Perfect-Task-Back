@@ -33,8 +33,8 @@ authRouter.patch(
 
 authRouter.post("/logout", authenticate, authControllers.signout);
 
-export default authRouter;
-
 // const googleRouter = express.Router();
 authRouter.get("/google", googleControler.googleAuth);
 authRouter.get("/google-redirect", googleControler.googleRedirect);
+
+export default authRouter;
