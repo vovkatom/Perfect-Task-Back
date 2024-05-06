@@ -2,15 +2,15 @@ import nodemailer from "nodemailer";
 
 import "dotenv/config";
 
-const {UKRNET_EMAIL, UKRNET_PASSWORD} = process.env;
+const {META_EMAIL, META_PASSWORD} = process.env;
 
 const nodemailerConfig = {
-    host: "smtp.ukr.net",
+    host: "smtp.meta.ua",
     port: 465,
     secure: true,
     auth: {
-        user: UKRNET_EMAIL,
-        pass: UKRNET_PASSWORD,
+        user: "restapigoitmy@meta.ua",
+        pass: META_PASSWORD,
     },
     tls: {
 	    rejectUnauthorized: false
@@ -18,9 +18,11 @@ const nodemailerConfig = {
 };
 
 const transport = nodemailer.createTransport(nodemailerConfig);
+console.log('nodemailerConfig:', nodemailerConfig)
 
 const sendEmail = data => {
-    const email = {...data, from: UKR_NET_EMAIL};
+
+    const email = {...data, from: "restapigoitmy@meta.ua"};
     return transport.sendMail(email);
 }
 
