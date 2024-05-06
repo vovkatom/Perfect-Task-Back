@@ -4,10 +4,15 @@ import Card from "../models/cardModel.js";
 import Column from "../models/columnsModel.js";
 
 const addCard = async (req, res) => {
-  const { column: columnId } = req.body;
+  const { column: columnId, title } = req.body;
+
+  const existingCard = await Card.findOne({ title, column: columnId });
   const exsistColumn = await Column.findById(columnId);
   if (!exsistColumn) {
     throw HttpError(404, `Column with id=${columnId} not found`);
+  }
+  if (existingCard) {
+    throw HttpError(409, `A card with this ${title} is already in this Сolumn`);
   }
 
   const result = await Card.create({ ...req.body });
@@ -17,6 +22,7 @@ const addCard = async (req, res) => {
 
 const updateCard = async (req, res) => {
   const { id } = req.params;
+
   const result = await Card.findByIdAndUpdate(id, req.body);
   if (!result) {
     throw HttpError(404, `Card with id=${id} not found`);
@@ -46,7 +52,6 @@ const transferCard = async (req, res) => {
   const result = await Card.findByIdAndUpdate(
     id,
     { column: destination_id },
-    { new: true }
   );
   if (!result) {
     throw HttpError(404, `Card with id=${id} not found`);
