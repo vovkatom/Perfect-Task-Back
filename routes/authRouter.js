@@ -1,6 +1,6 @@
 import express from "express";
 import { userSignupSchema, userSigninSchema } from "../schemas/usersSchemas.js";
-import authControllers from "../controllers/authControlers.js";
+import authControllers from "../controllers/authControler.js";
 import googleControler from "../controllers/googleControler.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
@@ -29,11 +29,7 @@ authRouter.patch(
   authControllers.updateAuth
 );
 
-// authRouter.get("/current", authenticate, authControllers.getCurrent);
-
 authRouter.post("/logout", authenticate, authControllers.signout);
-
-// const googleRouter = express.Router();
 authRouter.get("/google", googleControler.googleAuth);
 authRouter.get("/google-redirect", googleControler.googleRedirect);
 

@@ -1,6 +1,7 @@
 import queryString from "query-string";
 import axios from "axios";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
+import HttpError from "../helpers/HttpError.js";
 import jwt from "jsonwebtoken";
 import * as authServices from "../services/authServices.js";
 import gravatar from "gravatar";
@@ -59,12 +60,14 @@ const googleRedirect = async (req, res) => {
   });
 
   const { email: emailGoogle, name: nameGoogle } = userData.data;
+  let tokenGoogle;
+  try {
+    tokenGoogle = await signupGoogle({ name: nameGoogle, email: emailGoogle });
+  } catch (error) {
+    throw HttpError(500, "Server Error");
+  }
 
-  ctrlWrapper(await signupGoogle({ name: nameGoogle, email: emailGoogle }));
-
-  return res.redirect(
-    `${FRONTEND_URL}?email=${userData.data.email}&name=${userData.data.name}}`
-  );
+  return res.redirect(`${FRONTEND_URL}?token=${tokenGoogle}`);
 };
 
 const signupGoogle = async (req, res) => {
@@ -83,7 +86,7 @@ const signupGoogle = async (req, res) => {
     const payload = { idUser };
     const tokenForGoogle = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
     await authServices.updateUser({ _id: idUser }, { token: tokenForGoogle });
-    return;
+    return tokenForGoogle;
   }
   const password = await bcrypt.hash(nanoid(), 10);
   const newUser = await authServices.signup({
@@ -98,6 +101,7 @@ const signupGoogle = async (req, res) => {
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
   await authServices.updateUser({ _id: id }, { token });
+  return token;
 };
 
 export default {
