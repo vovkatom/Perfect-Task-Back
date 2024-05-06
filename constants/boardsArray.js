@@ -27,6 +27,4 @@ export const backgrounds = [
   "x13",
   "x14",
   "x15",
-  "b01",
-  "b02",
 ];
