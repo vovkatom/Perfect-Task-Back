@@ -20,7 +20,7 @@ authRouter.post(
   authControllers.signin
 );
 
-authRouter.post("/signout", authenticate, authControllers.signout);
+// authRouter.post("/signout", authenticate, authControllers.signout);
 
 authRouter.patch(
   "/update",
@@ -29,7 +29,7 @@ authRouter.patch(
   authControllers.updateAuth
 );
 
-authRouter.post("/logout", authenticate, authControllers.signout);
+authRouter.post("/logout", authenticate, authControllers.logout);
 authRouter.get("/google", googleControler.googleAuth);
 authRouter.get("/google-redirect", googleControler.googleRedirect);
 
