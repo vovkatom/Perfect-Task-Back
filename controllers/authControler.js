@@ -11,7 +11,6 @@ const { JWT_SECRET } = process.env;
 
 const signup = async (req, res) => {
   const { password, email } = req.body;
-  console.log(req.user);
   const user = await authServices.findUser({ email });
   if (user) {
     throw HttpError(409, "Email in use");
@@ -120,13 +119,12 @@ export const updateAuth = async (req, res) => {
   });
 };
 
-const signout = async (req, res) => {
+const logout = async (req, res) => {
   const { _id } = req.user;
-  console.log("first", req);
   await authServices.updateUser({ _id }, { token: "" });
 
   res.status(204).json({
-    message: "Signout success",
+    message: "Logout success",
   });
 };
 
@@ -134,5 +132,5 @@ export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   updateAuth: ctrlWrapper(updateAuth),
-  signout: ctrlWrapper(signout),
+  logout: ctrlWrapper(logout),
 };

@@ -1,11 +1,7 @@
 import express from "express";
-import {
-  userSignupSchema,
-  userSigninSchema,
-  // userEmailSchema,
-} from "../schemas/usersSchemas.js";
-// import { subscriptionSchema } from "../schemas/contactsSchemas.js";
-import authControllers from "../controllers/authControlers.js";
+import { userSignupSchema, userSigninSchema } from "../schemas/usersSchemas.js";
+import authControllers from "../controllers/authControler.js";
+import googleControler from "../controllers/googleControler.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js";
@@ -15,7 +11,6 @@ const authRouter = express.Router();
 authRouter.post(
   "/signup",
   validateBody(userSignupSchema),
-  // upload.single("avatarURL"),
   authControllers.signup
 );
 
@@ -25,7 +20,7 @@ authRouter.post(
   authControllers.signin
 );
 
-authRouter.post("/signout", authenticate, authControllers.signout);
+// authRouter.post("/signout", authenticate, authControllers.signout);
 
 authRouter.patch(
   "/update",
@@ -34,8 +29,8 @@ authRouter.patch(
   authControllers.updateAuth
 );
 
-// authRouter.get("/current", authenticate, authControllers.getCurrent);
-
-authRouter.post("/logout", authenticate, authControllers.signout);
+authRouter.post("/logout", authenticate, authControllers.logout);
+authRouter.get("/google", googleControler.googleAuth);
+authRouter.get("/google-redirect", googleControler.googleRedirect);
 
 export default authRouter;
