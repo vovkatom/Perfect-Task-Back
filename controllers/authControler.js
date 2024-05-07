@@ -110,7 +110,7 @@ export const updateAuth = async (req, res) => {
       avatarURL: gravatar_url,
     }
   );
-  console.log("TWO", newUser);
+
   res.status(200).json({
     user: {
       email: newUser.email,
@@ -128,9 +128,19 @@ const logout = async (req, res) => {
   });
 };
 
+const getCurrent = (req, res) => {
+  const { name, email } = req.user;
+
+  res.json({
+    name,
+    email,
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   updateAuth: ctrlWrapper(updateAuth),
   logout: ctrlWrapper(logout),
+  getCurrent: ctrlWrapper(getCurrent),
 };
