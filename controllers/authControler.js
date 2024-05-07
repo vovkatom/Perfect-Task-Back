@@ -49,6 +49,7 @@ const signup = async (req, res) => {
     user: {
       email: newUser.email,
       name: newUser.name,
+      avatarURL: newUser.avatarURL,
     },
   });
 };
@@ -80,6 +81,7 @@ const signin = async (req, res) => {
     user: {
       email: user.email,
       name: user.name,
+      avatarURL: user.avatarURL,
     },
   });
 };
@@ -110,11 +112,12 @@ export const updateAuth = async (req, res) => {
       avatarURL: gravatar_url,
     }
   );
-  console.log("TWO", newUser);
+
   res.status(200).json({
     user: {
       email: newUser.email,
       name: newUser.name,
+      avatarURL: newUser.avatarURL,
     },
   });
 };
@@ -128,9 +131,20 @@ const logout = async (req, res) => {
   });
 };
 
+const getCurrent = (req, res) => {
+  const { name, email, avatarURL } = req.user;
+
+  res.json({
+    name,
+    email,
+    avatarURL,
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   updateAuth: ctrlWrapper(updateAuth),
   logout: ctrlWrapper(logout),
+  getCurrent: ctrlWrapper(getCurrent),
 };

@@ -1,0 +1,419 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "2.0.2",
+    "title": "Perfect Task",
+    "description": "Showing off swagger-ui-express",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json"],
+  "servers": [{ "url": "https://perfect-task-back.onrender.com/" }],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "User boards",
+      "description": "User boards endpoints"
+    },
+    {
+      "name": "Board cards",
+      "description": "Board cards endpoints"
+    },
+    {
+      "name": "Board columns",
+      "description": "Board columns endpoints"
+    }
+  ],
+
+  "paths": {
+    "/api/users/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+
+        "parameters": [],
+
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Email in use",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign in existing user",
+        "parameters": [],
+
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthorizationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password is wrong",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/update": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User authorization",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password is wrong",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Log out existing user",
+        "parameters": [],
+
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "204": {
+            "description": "Logout success"
+          },
+          "401": {
+            "description": "Unauthorised"
+          },
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "Description of the error"
+                  }
+                },
+                "example": {
+                  "message": "Authentication failed. Please log in"
+                }
+              }
+            }
+          }
+        },
+        "401": {}
+      }
+    },
+    "/api/users/google": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Redirects users to Google OAuth consent screen for authentication.",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "302": {
+            "description": "Redirects to Google OAuth consent screen."
+          }
+        }
+      }
+    },
+    "/api/users/google-redirect": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Google Redirect",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "code",
+            "required": true,
+            "description": "Authorization code received from Google.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "/api/users/current": {
+    "get": {
+      "tags": ["Auth"],
+      "summary": "Current user",
+      "parameters": [],
+      "security": [{ "Bearer": [] }],
+      "responses": {
+        "200": {
+          "description": "Successful operation",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSerializer"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorised",
+          "content": {}
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["email", "password", "name"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "Alex"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "description": "Users token"
+            },
+            "user": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "name": {
+                "type": "string",
+                "description": "User's name",
+                "example": "32143232436545474"
+              }
+            }
+          },
+          "example": {
+            "token": "0fvblseorkflqejmqflkrenjkgvnfkvb2-3rmkfeifg9qeoprgqorejtrjgkkuurwe9123j4m,dwsq23wer2q",
+            "user": { "email": "karl@gmail.com", "name": "Karl" }
+          }
+        }
+      },
+      "AuthorizationRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "AuthorizationResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "description": "Users token"
+            },
+            "user": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "name": {
+                "type": "string",
+                "description": "User's name",
+                "example": "32143232436545474"
+              }
+            }
+          },
+          "example": {
+            "token": "0fvblseorkflqejmqflkrenjkgvnfkvb2-3rmkfeifg9qeoprgqorejtrjgkkuurwe9123j4m,dwsq23wer2q",
+            "user": { "email": "karl@gmail.com", "name": "Karl" }
+          }
+        }
+      },
+      "UpdateRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          }
+        }
+      },
+      "UpdateResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "name": {
+              "type": "string",
+              "description": "User's name"
+            }
+          },
+          "example": {
+            "user": { "email": "karl@gmail.com", "name": "Karl" }
+          }
+        }
+      },
+      "UserSerializer": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "name": {
+              "type": "string",
+              "description": "User's name"
+            }
+          },
+          "example": {
+            "email": "karl@gmail.com",
+            "name": "Karl"
+          }
+        }
+      }
+    },
+    "securitySchemas": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
