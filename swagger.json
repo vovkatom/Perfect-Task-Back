@@ -67,7 +67,7 @@
             "content": {}
           },
           "409": {
-            "description": "Provided email already exists",
+            "description": "Email in use",
             "content": {}
           }
         }
@@ -76,7 +76,7 @@
     "/api/users/signin": {
       "post": {
         "tags": ["Auth"],
-        "summary": "User authorization",
+        "summary": "Sign in existing user",
         "parameters": [],
 
         "security": [{ "Bearer": [] }],
@@ -92,12 +92,12 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationRequest"
+                  "$ref": "#/components/schemas/AuthorizationResponse"
                 }
               }
             }
@@ -107,16 +107,59 @@
             "content": {}
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Email or password is wrong",
             "content": {}
           },
-          "409": {
-            "description": "Provided email already exists",
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
             "content": {}
           }
         }
       }
-    }
+    },
+    "/api/users/update": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User authorization",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password is wrong",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/logout": {}
   },
   "components": {
     "schemas": {
@@ -165,6 +208,81 @@
           },
           "example": {
             "token": "0fvblseorkflqejmqflkrenjkgvnfkvb2-3rmkfeifg9qeoprgqorejtrjgkkuurwe9123j4m,dwsq23wer2q",
+            "user": { "email": "karl@gmail.com", "name": "Karl" }
+          }
+        }
+      },
+      "AuthorizationRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "AuthorizationResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "description": "Users token"
+            },
+            "user": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "name": {
+                "type": "string",
+                "description": "User's name",
+                "example": "32143232436545474"
+              }
+            }
+          },
+          "example": {
+            "token": "0fvblseorkflqejmqflkrenjkgvnfkvb2-3rmkfeifg9qeoprgqorejtrjgkkuurwe9123j4m,dwsq23wer2q",
+            "user": { "email": "karl@gmail.com", "name": "Karl" }
+          }
+        }
+      },
+      "UpdateRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          }
+        }
+      },
+      "UpdateResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "name": {
+              "type": "string",
+              "description": "User's name"
+            }
+          },
+          "example": {
             "user": { "email": "karl@gmail.com", "name": "Karl" }
           }
         }
