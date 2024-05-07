@@ -159,8 +159,67 @@
         }
       }
     },
-    "/api/users/logout": {}
+    "/api/users/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Log out existing user",
+        "parameters": [],
+
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "204": {
+            "description": "Logout success"
+          },
+          "401": {
+            "description": "Unauthorised"
+          },
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "Description of the error"
+                  }
+                },
+                "example": {
+                  "message": "Authentication failed. Please log in"
+                }
+              }
+            }
+          }
+        },
+        "401": {}
+      }
+    }
   },
+  "/api/users/current": {
+    "get": {
+      "tags": ["Auth"],
+      "summary": "Current user",
+      "parameters": [],
+      "security": [{ "Bearer": [] }],
+      "responses": {
+        "200": {
+          "description": "Successful operation",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSerializer"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorised",
+          "content": {}
+        }
+      }
+    }
+  },
+
   "components": {
     "schemas": {
       "RegistrationRequest": {
@@ -284,6 +343,27 @@
           },
           "example": {
             "user": { "email": "karl@gmail.com", "name": "Karl" }
+          }
+        }
+      },
+      "UserSerializer": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "name": {
+              "type": "string",
+              "description": "User's name"
+            }
+          },
+          "example": {
+            "email": "karl@gmail.com",
+            "name": "Karl"
           }
         }
       }
