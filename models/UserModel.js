@@ -19,7 +19,11 @@ const userSchema = new Schema(
       required: [true, "Name is required"],
     },
     avatarURL: { type: String, default: null },
-    token: {
+    accessToken: {
+      type: String,
+      default: null,
+    },
+    refreshToken: {
       type: String,
       default: null,
     },

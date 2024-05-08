@@ -16,13 +16,13 @@ const authenticate = async (req, res, next) => {
   }
 
   try {
-    const { JWT_SECRET } = process.env;
-    const { id } = jwt.verify(token, JWT_SECRET);
+    const { ACCESS_JWT_SECRET } = process.env;
+    const { id } = jwt.verify(token, ACCESS_JWT_SECRET);
     const user = await findUser({ _id: id });
     if (!user) {
       return next(HttpError(401, "User not found"));
     }
-    if (!user.token) {
+    if (!user.refreshToken) {
       return next(HttpError(401, "Token invalid"));
     }
     req.user = user;
