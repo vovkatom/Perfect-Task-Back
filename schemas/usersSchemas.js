@@ -13,3 +13,9 @@ export const userSigninSchema = Joi.object({
   email: Joi.string().pattern(emailRegepxp).required(),
   token: Joi.string().default(null),
 });
+
+export const refreshTokenSchema = Joi.object({
+  password: Joi.string().min(8).max(64).required(),
+  email: Joi.string().pattern(emailRegepxp).required(),
+  token: Joi.string().default(null),
+});

@@ -7,7 +7,7 @@ import uploadToCloudinary from "../helpers/uploadToCloudinary.js";
 import gravatar from "gravatar";
 import "dotenv/config";
 
-const { JWT_SECRET } = process.env;
+const { ACCESS_JWT_SECRET, REFRESH_JWT_SECRET } = process.env;
 
 const signup = async (req, res) => {
   const { password, email } = req.body;
@@ -35,17 +35,22 @@ const signup = async (req, res) => {
     id,
   };
 
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, { expiresIn: "2m" });
+  const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
+    expiresIn: "7d",
+  });
 
   await authServices.updateUser(
     { _id: id },
     {
-      token,
+      accessToken,
+      refreshToken,
     }
   );
 
   res.status(201).json({
-    token,
+    accessToken,
+    refreshToken,
     user: {
       email: newUser.email,
       name: newUser.name,
@@ -73,11 +78,15 @@ const signin = async (req, res) => {
     id,
   };
 
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-  await authServices.updateUser({ _id: id }, { token });
+  const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, { expiresIn: "2m" });
+  const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
+    expiresIn: "5m",
+  });
+  await authServices.updateUser({ _id: id }, { accessToken, refreshToken });
 
   res.json({
-    token,
+    accessToken,
+    refreshToken,
     user: {
       email: user.email,
       name: user.name,
@@ -124,7 +133,7 @@ export const updateAuth = async (req, res) => {
 
 const logout = async (req, res) => {
   const { _id } = req.user;
-  await authServices.updateUser({ _id }, { token: "" });
+  await authServices.updateUser({ _id }, { accessToken: "", refreshToken: "" });
 
   res.status(204).json({
     message: "Logout success",
@@ -132,13 +141,40 @@ const logout = async (req, res) => {
 };
 
 const getCurrent = (req, res) => {
-  const { name, email, avatarURL } = req.user;
+  const { name, email, avatarURL, refreshToken, accessToken } = req.user;
 
   res.json({
-    name,
-    email,
-    avatarURL,
+    accessToken,
+    refreshToken,
+    user: {
+      email,
+      name,
+      avatarURL,
+    },
   });
+};
+
+const refresh = async (req, res) => {
+  const { refreshToken: token } = req.body;
+  try {
+    const { id } = jwt.verify(token, REFRESH_JWT_SECRET);
+    const isExist = await authServices.findUser({ refreshToken: token });
+    if (!isExist) {
+      throw HttpError(403, "Token invalid");
+    }
+    const payload = {
+      id,
+    };
+    const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, {
+      expiresIn: "2m",
+    });
+    const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    res.json({ accessToken, refreshToken });
+  } catch (error) {
+    throw HttpError(403, error.message);
+  }
 };
 
 export default {
@@ -147,4 +183,5 @@ export default {
   updateAuth: ctrlWrapper(updateAuth),
   logout: ctrlWrapper(logout),
   getCurrent: ctrlWrapper(getCurrent),
+  refresh: ctrlWrapper(refresh),
 };
