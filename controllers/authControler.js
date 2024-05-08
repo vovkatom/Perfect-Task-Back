@@ -132,12 +132,13 @@ const logout = async (req, res) => {
 };
 
 const getCurrent = (req, res) => {
-  const { name, email, avatarURL } = req.user;
+  const { name, email, avatarURL, token } = req.user;
 
   res.json({
     name,
     email,
     avatarURL,
+    token,
   });
 };
 
