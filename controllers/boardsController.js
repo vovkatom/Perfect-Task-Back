@@ -4,7 +4,8 @@ import Column from "../models/columnsModel.js";
 import Card from "../models/cardModel.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
-import fetchFromCloudinary from "../helpers/fetchFromCloudinary.js";
+import { fetchFromCloudinary, fetchFromCloudinaryBgAllmin } from "../helpers/fetchFromCloudinary.js";
+// import fetchCloudinary  from "../helpers/fetchFromCloudinary.js";
 
 const addBoard = async (req, res) => {
   const { _id: owner } = req.user;
@@ -154,10 +155,22 @@ const deleteBoard = async (req, res) => {
   res.status(200).json({ message: "Board deleted", deletedId: result._id });
 };
 
+
+const getBgAllmin = async (req, res) => {
+  
+  const tag = 'min'
+
+  const result = await fetchFromCloudinaryBgAllmin(tag);
+
+
+  res.json(result);
+};
+
 export default {
   addBoard: ctrlWrapper(addBoard),
   getAllBoards: ctrlWrapper(getAllBoards),
   getBoardById: ctrlWrapper(getBoardById),
   updateBoard: ctrlWrapper(updateBoard),
   deleteBoard: ctrlWrapper(deleteBoard),
+  getBgAllmin: ctrlWrapper(getBgAllmin),
 };
