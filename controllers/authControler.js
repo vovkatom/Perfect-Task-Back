@@ -35,9 +35,9 @@ const signup = async (req, res) => {
     id,
   };
 
-  const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, { expiresIn: "7d" });
+  const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, { expiresIn: "2m" });
   const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
-    expiresIn: "5m",
+    expiresIn: "7d",
   });
 
   await authServices.updateUser(
@@ -78,9 +78,9 @@ const signin = async (req, res) => {
     id,
   };
 
-  const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, { expiresIn: "24h" });
+  const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, { expiresIn: "2m" });
   const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
-    expiresIn: "5m",
+    expiresIn: "7d",
   });
   await authServices.updateUser({ _id: id }, { accessToken, refreshToken });
 
@@ -168,7 +168,7 @@ const refresh = async (req, res) => {
       id,
     };
     const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, {
-      expiresIn: "7d",
+      expiresIn: "2m",
     });
     const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
       expiresIn: "7d",
