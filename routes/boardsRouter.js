@@ -10,10 +10,10 @@ const boardsRouter = express.Router();
 boardsRouter.use(authenticate);
 
 boardsRouter.get("/", boardsController.getAllBoards);
+boardsRouter.get("/bgall", boardsController.getBgAllmin);
 boardsRouter.get("/:id", isValidId, boardsController.getBoardById);
 boardsRouter.post("/", validateBody(boardsShemas.boardAddSchema), boardsController.addBoard)
 boardsRouter.delete("/:id", isValidId, boardsController.deleteBoard);
 boardsRouter.put("/:id", isValidId, validateBody(boardsShemas.boardUpdateSchema), boardsController.updateBoard);
-
 
 export default boardsRouter;
