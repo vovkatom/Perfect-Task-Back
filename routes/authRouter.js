@@ -46,6 +46,6 @@ authRouter.post(
 );
 
 authRouter.get("/current", authenticate, authController.getCurrent);
-authRouter.post("/refresh", authenticate, authController.refresh);
+authRouter.post("/refresh", authController.refresh);
 
 export default authRouter;
