@@ -78,7 +78,7 @@ const signin = async (req, res) => {
     id,
   };
 
-  const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, { expiresIn: "2m" });
+  const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, { expiresIn: "7d" });
   const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
     expiresIn: "7d",
   });
@@ -168,7 +168,7 @@ const refresh = async (req, res) => {
       id,
     };
     const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, {
-      expiresIn: "2m",
+      expiresIn: "7d",
     });
     const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
       expiresIn: "7d",
