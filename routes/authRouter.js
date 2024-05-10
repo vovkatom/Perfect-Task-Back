@@ -40,7 +40,7 @@ authRouter.get("/google-redirect", googleControler.googleRedirect);
 
 authRouter.post(
   "/support",
-  authenticate,
+  // authenticate,
   validateBody(emailHelpShemas),
   emailHelp
 );
