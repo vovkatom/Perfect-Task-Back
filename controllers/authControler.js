@@ -104,10 +104,16 @@ export const updateAuth = async (req, res) => {
     throw HttpError(401, "Password is wrong");
   }
 
-  // const userEmail = await authServices.findUser({ email });
-  // if (userEmail) {
-  //   throw HttpError(409, "Email in use");
-  // }
+  req.body.password = passwordBD;
+
+  if (email) {
+    const userBD = await authServices.findUser({ email });
+    if (userBD & (userBD._id !== id)) {
+      console.log("first", userBD._id);
+      console.log("two", id);
+      throw HttpError(409, "Email in use");
+    }
+  }
 
   const user = await authServices.findUser({ _id: id });
 
