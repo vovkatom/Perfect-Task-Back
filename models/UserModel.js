@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { handleSaveError, setUpdateSetting } from "./hooks.js";
-import { emailRegepxp } from "../constants/user-constants.js";
+import { emailRegepxp, themeList } from "../constants/user-constants.js";
 
 const userSchema = new Schema(
   {
@@ -19,6 +19,11 @@ const userSchema = new Schema(
       required: [true, "Name is required"],
     },
     avatarURL: { type: String, default: null },
+    userTheme: {
+      type: String,
+      enum: themeList,
+      default: "light",
+    },
     accessToken: {
       type: String,
       default: null,

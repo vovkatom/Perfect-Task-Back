@@ -182,7 +182,7 @@ const refresh = async (req, res) => {
       id,
     };
     const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, {
-      expiresIn: "2m",
+      expiresIn: "2d",
     });
     const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
       expiresIn: "7d",
@@ -194,6 +194,24 @@ const refresh = async (req, res) => {
   }
 };
 
+const updateTheme = async (req, res) => {
+  const { _id } = req.user;
+  const result = await authServices.updateUser({_id}, req.body);
+    res.status(200).json({
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+        user: {
+            _id: result._id,
+            name: result.name,
+            email: result.email,
+            avatarURL: result.avatarURL,
+            userTheme: result.userTheme,
+        }
+    });
+};
+
+
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
@@ -201,4 +219,5 @@ export default {
   logout: ctrlWrapper(logout),
   getCurrent: ctrlWrapper(getCurrent),
   refresh: ctrlWrapper(refresh),
+  updateTheme: ctrlWrapper(updateTheme),
 };
