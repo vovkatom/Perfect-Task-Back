@@ -108,9 +108,7 @@ export const updateAuth = async (req, res) => {
 
   if (email) {
     const userBD = await authServices.findUser({ email });
-    if (userBD && userBD._id !== id) {
-      console.log("first", userBD._id);
-      console.log("two", id);
+    if (userBD & (userBD._id !== id)) {
       throw HttpError(409, "Email in use");
     }
   }
@@ -197,21 +195,19 @@ const refresh = async (req, res) => {
 
 const updateTheme = async (req, res) => {
   const { _id } = req.user;
-  const result = await authServices.updateUser({_id}, req.body);
-    res.status(200).json({
-        accessToken: result.accessToken,
-        refreshToken: result.refreshToken,
-        user: {
-            _id: result._id,
-            name: result.name,
-            email: result.email,
-            avatarURL: result.avatarURL,
-            userTheme: result.userTheme,
-        }
-    });
+  const result = await authServices.updateUser({ _id }, req.body);
+  res.status(200).json({
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+    user: {
+      _id: result._id,
+      name: result.name,
+      email: result.email,
+      avatarURL: result.avatarURL,
+      userTheme: result.userTheme,
+    },
+  });
 };
-
-
 
 export default {
   signup: ctrlWrapper(signup),
