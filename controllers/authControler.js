@@ -96,8 +96,19 @@ const signin = async (req, res) => {
 };
 
 export const updateAuth = async (req, res) => {
-  const { _id: id } = req.user;
-  const { email } = req.body;
+  const { _id: id, password: passwordBD } = req.user;
+  const { email, password } = req.body;
+
+  const passwordCompare = await bcrypt.compare(password, passwordBD);
+  if (!passwordCompare) {
+    throw HttpError(401, "Password is wrong");
+  }
+
+  const userEmail = await authServices.findUser({ email });
+  if (userEmail) {
+    throw HttpError(409, "Email in use");
+  }
+
   const user = await authServices.findUser({ _id: id });
 
   let gravatar_url = "";
@@ -107,7 +118,7 @@ export const updateAuth = async (req, res) => {
   } else if (!user.avatarURL.includes("cloudinary.com")) {
     gravatar_url = gravatar.url(
       email,
-      { s: "250", r: "x", d: "identicon" },
+      { s: "200", r: "x", d: "identicon" },
       true
     );
   } else {
