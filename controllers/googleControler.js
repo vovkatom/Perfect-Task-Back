@@ -14,7 +14,8 @@ const {
   GOOGLE_CLIENT_SECRET,
   BASE_URL,
   FRONTEND_URL,
-  JWT_SECRET,
+  ACCESS_JWT_SECRET,
+  REFRESH_JWT_SECRET,
 } = process.env;
 
 const googleAuth = async (req, res) => {
@@ -60,14 +61,15 @@ const googleRedirect = async (req, res) => {
   });
 
   const { email: emailGoogle, name: nameGoogle } = userData.data;
-  let tokenGoogle;
+  let tokenGoogle = {};
   try {
     tokenGoogle = await signupGoogle({ name: nameGoogle, email: emailGoogle });
   } catch (error) {
     throw HttpError(500, "Server Error");
   }
-
-  return res.redirect(`${FRONTEND_URL}?token=${tokenGoogle}`);
+  return res.redirect(
+    `${FRONTEND_URL}?accessToken=${tokenGoogle.accessToken}&refreshToken=${tokenGoogle.refreshToken}`
+  );
 };
 
 const signupGoogle = async (req, res) => {
@@ -84,9 +86,20 @@ const signupGoogle = async (req, res) => {
   if (user) {
     const { idUser } = user;
     const payload = { idUser };
-    const tokenForGoogle = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await authServices.updateUser({ _id: idUser }, { token: tokenForGoogle });
-    return tokenForGoogle;
+    const tokenAccessForGoogle = jwt.sign(payload, ACCESS_JWT_SECRET, {
+      expiresIn: "23h",
+    });
+    const tokenRefreshForGoogle = jwt.sign(payload, REFRESH_JWT_SECRET, {
+      expiresIn: "23h",
+    });
+    await authServices.updateUser(
+      { _id: idUser },
+      { accessToken: tokenAccessForGoogle, refreshToken: tokenRefreshForGoogle }
+    );
+    return {
+      accessToken: tokenAccessForGoogle,
+      refreshToken: tokenRefreshForGoogle,
+    };
   }
   const password = await bcrypt.hash(nanoid(), 10);
   const newUser = await authServices.signup({
@@ -99,9 +112,18 @@ const signupGoogle = async (req, res) => {
     id,
   };
 
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-  await authServices.updateUser({ _id: id }, { token });
-  return token;
+  const tokenAccessToken = jwt.sign(payload, ACCESS_JWT_SECRET, {
+    expiresIn: "23h",
+  });
+  const tokenRefreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
+    expiresIn: "23h",
+  });
+
+  await authServices.updateUser(
+    { _id: id },
+    { accessToken: tokenAccessToken, refreshToken: tokenRefreshToken }
+  );
+  return { accessToken: tokenAccessToken, refreshToken: tokenRefreshToken };
 };
 
 export default {

@@ -96,6 +96,7 @@ const signin = async (req, res) => {
 };
 
 export const updateAuth = async (req, res) => {
+  console.log("dddd", req);
   const { _id: id, password: passwordBD } = req.user;
   const { email, password } = req.body;
 
@@ -108,9 +109,7 @@ export const updateAuth = async (req, res) => {
 
   if (email) {
     const userBD = await authServices.findUser({ email });
-    if (userBD && userBD._id !== id) {
-      console.log("first", userBD._id);
-      console.log("two", id);
+    if (userBD & (userBD._id !== id)) {
       throw HttpError(409, "Email in use");
     }
   }
