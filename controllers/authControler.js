@@ -108,7 +108,7 @@ export const updateAuth = async (req, res) => {
 
   if (email) {
     const userBD = await authServices.findUser({ email });
-    if (userBD & (userBD._id !== id)) {
+    if (userBD && userBD._id !== id) {
       throw HttpError(409, "Email in use");
     }
   }
