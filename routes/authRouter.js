@@ -3,6 +3,7 @@ import {
   userSignupSchema,
   userSigninSchema,
   refreshTokenSchema,
+  userThemeSchema,
 } from "../schemas/usersSchemas.js";
 import authController from "../controllers/authControler.js";
 import googleControler from "../controllers/googleControler.js";
@@ -47,5 +48,7 @@ authRouter.post(
 
 authRouter.get("/current", authenticate, authController.getCurrent);
 authRouter.post("/refresh", authController.refresh);
+
+authRouter.patch("/theme", authenticate,  validateBody(userThemeSchema), authController.updateTheme);
 
 export default authRouter;

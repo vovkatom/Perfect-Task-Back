@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { emailRegepxp } from "../constants/user-constants.js";
+import { emailRegepxp, themeList } from "../constants/user-constants.js";
 
 export const userSignupSchema = Joi.object({
   password: Joi.string().min(8).max(64).required(),
@@ -18,4 +18,8 @@ export const refreshTokenSchema = Joi.object({
   password: Joi.string().min(8).max(64).required(),
   email: Joi.string().pattern(emailRegepxp).required(),
   token: Joi.string().default(null),
+});
+
+export const userThemeSchema = Joi.object({
+  userTheme: Joi.string().valid(...themeList),
 });
