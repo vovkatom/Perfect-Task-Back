@@ -30,6 +30,7 @@ const emailHelp = async (req, res) => {
   await sendEmail(letterHelpUser);
 
   res.status(200).json({
+    email:email,
     message: "Reply email has been sent",
   });
 };
