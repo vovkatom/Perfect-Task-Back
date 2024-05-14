@@ -83,21 +83,22 @@ const signupGoogle = async (req, res) => {
   const user = await authServices.findUser({ email });
 
   if (user) {
-    const { idUser } = user;
-    const payload = { idUser };
-    const accessTokenForGoogle = jwt.sign(payload, ACCESS_JWT_SECRET, {
+    const { _id: idUser } = user;
+    const payload = { id: idUser };
+    const accessToken = jwt.sign(payload, ACCESS_JWT_SECRET, {
       expiresIn: "23h",
     });
-    const refreshTokenForGoogle = jwt.sign(payload, REFRESH_JWT_SECRET, {
+    const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
       expiresIn: "23h",
     });
+    console.log("first", idUser);
     await authServices.updateUser(
       { _id: idUser },
-      { accessToken: accessTokenForGoogle, refreshToken: refreshTokenForGoogle }
+      { accessToken, refreshToken }
     );
     return {
-      accessToken: accessTokenForGoogle,
-      refreshToken: refreshTokenForGoogle,
+      accessToken,
+      refreshToken,
     };
   }
   const password = await bcrypt.hash(nanoid(), 10);
