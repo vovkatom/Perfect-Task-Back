@@ -26,8 +26,11 @@ app.use("/api/columns", columnsRouter);
 app.use("/api/cards", cardsRouter);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-app.use((_, res) => {
-  res.status(404).json({ message: "Route not found" });
+// app.use((_, res) => {
+//   res.status(404).json({ message: "Цей сервер не для Вас )))" });
+// });
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(__dirname, './helpers/error.html'));
 });
 
 app.use((err, req, res, next) => {
