@@ -2,6 +2,9 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import swaggerUI from "swagger-ui-express";
+import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 import swaggerDocument from "./swagger.json" assert { type: "json" };
 import authRouter from "./routes/authRouter.js";
@@ -13,12 +16,15 @@ import "dotenv/config";
 
 const { DB_HOST, PORT = 3000 } = process.env;
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
 
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/users", authRouter);
 app.use("/api/boards", boardsRouter);
@@ -26,11 +32,8 @@ app.use("/api/columns", columnsRouter);
 app.use("/api/cards", cardsRouter);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-// app.use((_, res) => {
-//   res.status(404).json({ message: "Цей сервер не для Вас )))" });
-// });
-app.use((req, res, next) => {
-  res.status(404).sendFile(path.join(__dirname, './helpers/error.html'));
+app.use((_, res) => {
+  res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
 });
 
 app.use((err, req, res, next) => {
