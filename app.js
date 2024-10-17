@@ -32,9 +32,9 @@ app.use("/api/columns", columnsRouter);
 app.use("/api/cards", cardsRouter);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-app.use((_, res) => {
-  res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
-});
+// app.use((_, res) => {
+//   res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
+// });
 
 app.use((err, req, res, next) => {
   const { status = 500, message = "Server error" } = err;
