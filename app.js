@@ -16,8 +16,8 @@ import "dotenv/config";
 
 const { DB_HOST, PORT = 3000 } = process.env;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 const app = express();
 
